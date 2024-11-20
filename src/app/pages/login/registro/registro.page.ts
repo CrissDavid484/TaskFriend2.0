@@ -55,7 +55,7 @@ export class RegistroPage implements OnInit {
 
         }
         this.utilsSvc.setElementInLocalStorage('user', user);
-        this.utilsSvc.routerLink('/inicio');
+        this.utilsSvc.routerLink('/inicio/home');
 
         this.utilsSvc.dismissLoading();
 
@@ -65,6 +65,8 @@ export class RegistroPage implements OnInit {
           color: 'success',
           icon: 'person-outline'
         })
+
+        this.form.reset();
       }, error => {
         this.utilsSvc.presentToast({
           message: error,

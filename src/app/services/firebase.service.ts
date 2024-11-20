@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { user } from '../models/user.model';
 import { getAuth, updateProfile } from 'firebase/auth';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class FirebaseService {
 
   constructor(
     private auth: AngularFireAuth,
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private utilsSvc: UtilsService
   ) { }
 
 
@@ -32,6 +34,13 @@ export class FirebaseService {
 
   getAuthState(){
     return this.auth.authState;
+  }
+
+  async signOut(){
+    await this.auth.signOut();
+    this.utilsSvc.routerLink('/login');
+    localStorage.removeItem('user');
+
   }
 }
 

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { user } from 'src/app/models/user.model';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +16,10 @@ export class LoginPage implements OnInit {
     password: new FormControl('', [Validators.required])
   })
 
-  constructor() { }
+  constructor(
+    private firebaseSVc: FirebaseService,
+    private utilsSvc: UtilsService
+  ) { }
 
   ngOnInit() {
   }
@@ -21,7 +27,43 @@ export class LoginPage implements OnInit {
 
   submit() {
     if (this.form.valid) {
-      console.log(this.form.value);
+      
+ 
+      this.utilsSvc.presentLoading({ message: 'Autenticando...' });
+      this.firebaseSVc.login(this.form.value as user).then(async res => {
+        console.log(res);
+
+        let user: user = {
+          uid: res.user.uid,
+          name: res.user.displayName,
+          email: res.user.email
+
+        }
+        this.utilsSvc.setElementInLocalStorage('user', user);
+        this.utilsSvc.routerLink('/inicio/home');
+
+        this.utilsSvc.dismissLoading();
+
+        this.utilsSvc.presentToast({
+          message: '¡Bienvenido a TaskFriend!',
+          duration: 1500,
+          color: 'success',
+          icon: 'person-outline'
+        })
+
+        this.form.reset();
+      }, error => {
+        this.utilsSvc.presentToast({
+          message: error,
+          duration: 5000,
+          color: 'warning',
+          icon: 'alert-circle-outline'
+        })
+        this.utilsSvc.dismissLoading();
+
+        
+      }
+      )
     }
   }
 }
