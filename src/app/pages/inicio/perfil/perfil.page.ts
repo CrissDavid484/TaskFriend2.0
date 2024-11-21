@@ -9,6 +9,7 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./perfil.page.scss'],
 })
 export class PerfilPage implements OnInit {
+  
   user = {} as user;
 
   constructor(
@@ -24,7 +25,7 @@ export class PerfilPage implements OnInit {
   }
 
   getUser() {
-    return this.user = this.utilsSvc.getElementFromLocalStorage('user');
+    return this.user = this.utilsSvc.getElementFromLocalStorage('user')
   }
 
   signOut() {

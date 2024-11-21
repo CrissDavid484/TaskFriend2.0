@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Task } from 'src/app/models/task.model';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { UtilsService } from 'src/app/services/utils.service';
+import { AgregarActualizarTaskComponent } from 'src/app/compartido/componentes/agregar-actualizar-task/agregar-actualizar-task.component';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +11,59 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomePage implements OnInit {
 
-  constructor() { }
+
+tasks: Task[] = [
+  {
+  id:'1',
+  title: 'Autenticación con Google',
+  description: 'Crear un función que permita autenticar con Google',
+  items:[
+    { name: 'Actividad 1', completed: true },
+    { name: 'Actividad 2', completed: false },
+    { name: 'Actividad 3', completed: false },
+   ]
+  },
+  {
+    id:'2',
+    title: 'Autenticación con Google',
+    description: 'Crear un función que permita autenticar con Google',
+    items:[
+      { name: 'Actividad 1', completed: true },
+      { name: 'Actividad 2', completed: true },
+      { name: 'Actividad 3', completed: false },
+     ]
+    },
+    {
+  id:'3',
+  title: 'Autenticación con Google',
+  description: 'Crear un función que permita autenticar con Google',
+  items:[
+    { name: 'Actividad 1', completed: true },
+    { name: 'Actividad 2', completed: true },
+    { name: 'Actividad 3', completed: true },
+   ]
+  },
+]
+
+  constructor(
+    private firebaseSvc: FirebaseService,
+    private utilsSvc: UtilsService
+  ) { }
 
   ngOnInit() {
+    this.addOrUpdateTask();
+  }
+
+  getPercentage(task: Task){
+    return this.utilsSvc.getPercentage(task);
+  }
+
+  addOrUpdateTask(task?: Task){
+    this.utilsSvc.presentModal({
+      component: AgregarActualizarTaskComponent,
+      componentProps: { task },
+      cssClass:'add-update-modal'
+    });
   }
 
 }
