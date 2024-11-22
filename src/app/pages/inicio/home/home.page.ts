@@ -3,6 +3,7 @@ import { Task } from 'src/app/models/task.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AgregarActualizarTaskComponent } from 'src/app/compartido/componentes/agregar-actualizar-task/agregar-actualizar-task.component';
+import { user } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-home',
@@ -12,38 +13,7 @@ import { AgregarActualizarTaskComponent } from 'src/app/compartido/componentes/a
 export class HomePage implements OnInit {
 
 
-tasks: Task[] = [
-  {
-  id:'1',
-  title: 'Autenticación con Google',
-  description: 'Crear un función que permita autenticar con Google',
-  items:[
-    { name: 'Actividad 1', completed: true },
-    { name: 'Actividad 2', completed: false },
-    { name: 'Actividad 3', completed: false },
-   ]
-  },
-  {
-    id:'2',
-    title: 'Autenticación con Google',
-    description: 'Crear un función que permita autenticar con Google',
-    items:[
-      { name: 'Actividad 1', completed: true },
-      { name: 'Actividad 2', completed: true },
-      { name: 'Actividad 3', completed: false },
-     ]
-    },
-    {
-  id:'3',
-  title: 'Autenticación con Google',
-  description: 'Crear un función que permita autenticar con Google',
-  items:[
-    { name: 'Actividad 1', completed: true },
-    { name: 'Actividad 2', completed: true },
-    { name: 'Actividad 3', completed: true },
-   ]
-  },
-]
+tasks: Task[] = []
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -51,7 +21,11 @@ tasks: Task[] = [
   ) { }
 
   ngOnInit() {
-    this.addOrUpdateTask();
+
+  }
+
+  ionViewWillEnter() {
+    this.getTask();
   }
 
   getPercentage(task: Task){
@@ -64,6 +38,19 @@ tasks: Task[] = [
       componentProps: { task },
       cssClass:'add-update-modal'
     });
+  }
+
+  getTask(){
+  let user: user = this.utilsSvc.getElementFromLocalStorage('user');
+  let path = `users/${user.uid}`;
+  
+  let sub = this.firebaseSvc.getSubcollection(path, 'tasks').subscribe({
+      next: (res: Task[]) => {
+        console.log();
+        this.tasks = res;
+        sub.unsubscribe();
+      }
+    })
   }
 
 }

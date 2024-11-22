@@ -60,7 +60,7 @@ export class RegistroPage implements OnInit {
         this.utilsSvc.dismissLoading();
 
         this.utilsSvc.presentToast({
-          message: '¡Bienvenido a TaskFriend! ${user.name}',
+          message: `¡Bienvenido a TaskFriend! ${user.name}`,
           duration: 1500,
           color: 'success',
           icon: 'person-outline'
